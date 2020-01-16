@@ -24,7 +24,8 @@
     <meta name="apple-mobile-web-app-title" content="{{ ajuste('system_name') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-   
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <!-- Place favicon.ico in the root directory -->
     <link rel="apple-touch-icon" sizes="180x180" href=" {{ secure_asset('img/favicon/apple-touch-icon.png') }} ">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ secure_asset('img/favicon/favicon-32x32.png') }}">
@@ -40,7 +41,6 @@
 
     @guest
         @yield('content')
-        
     @else
         <body class="mod-bg-1 ">
           <!-- Wrapper-->
@@ -77,6 +77,28 @@
             
             @section('scripts')
             @show
+          <nav class="shortcut-menu d-none d-sm-block">
+            <input type="checkbox" class="menu-open" name="menu-open" id="menu_open" />
+            <label for="menu_open" class="menu-open-button ">
+                <span class="app-shortcut-icon d-block"></span>
+            </label>
+            <a href="#" class="menu-item btn" data-toggle="tooltip" data-placement="left" title="Desplazarse hacia arriba
+">
+                <i class="fal fa-arrow-up"></i>
+            </a>
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit(); localStorage.clear();" class="menu-item btn" data-toggle="tooltip" data-placement="left" title="Cerrar Sesión">
+                <i class="fal fa-sign-out"></i>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
+            </a>
+            <a href="#" class="menu-item btn" data-action="app-fullscreen" data-toggle="tooltip" data-placement="left" title="Pantalla completa">
+                <i class="fal fa-expand"></i>
+            </a>
+            <a href="#" class="menu-item btn" data-action="app-print" data-toggle="tooltip" data-placement="left" title="Imprimir página">
+                <i class="fal fa-print"></i>
+            </a>
+        </nav>
         </body>
     @endguest
 

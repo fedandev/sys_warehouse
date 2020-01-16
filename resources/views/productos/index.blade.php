@@ -1,76 +1,188 @@
-@extends('layout')
+@extends('layouts.app')
 
-@section('header')
-    <div class="page-header clearfix">
-        <h1>
-            <i class="glyphicon glyphicon-align-justify"></i> Productos
-            <a class="btn btn-success pull-right" href="{{ route('productos.create') }}"><i class="glyphicon glyphicon-plus"></i> Create</a>
-        </h1>
-
-    </div>
+@section('styles')
+    <link rel="stylesheet" media="screen, print" href="{{ secure_asset('css/datagrid/datatables/datatables.bundle.css') }}">
 @endsection
 
 @section('content')
     <div class="row">
-        <div class="col-md-12">
-            @if($productos->count())
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>PRODUCTO_CODIGO_INTERNO</th>
-                        <th>PRODUCTO_CODIGO_PROVEEDOR</th>
-                        <th>PRODUCTO_CODIGO_BARRAS</th>
-                        <th>PRODUCTO_IMAGEN</th>
-                        <th>PRODUCTO_DESCRIPCION</th>
-                        <th>PRODUCTO_UNIDAD_X_BULTO</th>
-                        <th>PRODUCTO_PRECIO_VENTA</th>
-                        <th>PRODUCTO_PRECIO_COSTO</th>
-                        <th>FK_MARCA_ID</th>
-                        <th>FK_PROVEEDOR_CLIENTE_ID</th>
-                        <th>FK_RUBRO_ID</th>
-                        <th>FK_TALLA_ID</th>
-                        <th>FK_COLOR_ID</th>
-                            <th class="text-right">OPTIONS</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach($productos as $producto)
-                            <tr>
-                                <td>{{$producto->id}}</td>
-                                <td>{{$producto->producto_codigo_interno}}</td>
-                    <td>{{$producto->producto_codigo_proveedor}}</td>
-                    <td>{{$producto->producto_codigo_barras}}</td>
-                    <td>{{$producto->producto_imagen}}</td>
-                    <td>{{$producto->producto_descripcion}}</td>
-                    <td>{{$producto->producto_unidad_x_bulto}}</td>
-                    <td>{{$producto->producto_precio_venta}}</td>
-                    <td>{{$producto->producto_precio_costo}}</td>
-                    <td>{{$producto->fk_marca_id}}</td>
-                    <td>{{$producto->fk_proveedor_cliente_id}}</td>
-                    <td>{{$producto->fk_rubro_id}}</td>
-                    <td>{{$producto->fk_talla_id}}</td>
-                    <td>{{$producto->fk_color_id}}</td>
-                                <td class="text-right">
-                                    <a class="btn btn-xs btn-primary" href="{{ route('productos.show', $producto->id) }}"><i class="glyphicon glyphicon-eye-open"></i> View</a>
-                                    <a class="btn btn-xs btn-warning" href="{{ route('productos.edit', $producto->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-                                    <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {!! $productos->render() !!}
-            @else
-                <h3 class="text-center alert alert-info">Empty!</h3>
-            @endif
-
+        <div class="col-xl-12">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2> Productos</h2>                     
+                </div>
+                <div class="panel-container show">
+                    <div class="panel-content">                          
+                        <div class="row">
+                            <div class="col-xl-12">                                
+                                <table id="dt_table" class="table table-bordered table-hover table-striped w-100 table-sm" >
+                                    <thead class="bg-primary-500">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Imagen</th>
+                                            <th>Nombre</th>
+                                            <th>Categoría</th>
+                                            <th>Price (tax incl.)</th>
+                                            <th>Stock</th>
+                                            <th>Estado</th>
+                                        </tr>                                                   
+                                    </thead>
+                                    <tbody>
+                                        @foreach($productos as $producto)   
+                                        <tr style="vertical-align: middle">
+                                            <td style="padding: .4rem; vertical-align: middle">{{ $producto->id }} </td>
+                                            <td style="width: 90px;">
+                                                @if($producto->producto_imagen != "")
+                                                  <img src="{{ asset('img/productos/' . $producto->id .'-'. $producto->producto_imagen) }}" style ="height:90px" >
+                                                @endif
+                                            </td>
+                                            <td style="padding: .4rem; vertical-align: middle">{{ $producto->producto_nombre }}</td>
+                                            <td style="padding: .4rem; vertical-align: middle"> Categoria </td>
+                                            <td style="padding: .4rem; vertical-align: middle">${{ number_format($producto->producto_precio_venta, 2, ',', '.') }}</td>
+                                            @php
+                                              $stock = $producto->stock();
+                                            @endphp
+                                            <td style="padding: .4rem; vertical-align: middle">{{ $stock }}</td>
+                                            @if($producto->producto_estado == 1)
+                                              <td style="padding: .4rem; vertical-align: middle"><i class="fal fa-check fa-2x" style="color:green;"></i></td>
+                                            @else
+                                              <td style="padding: .4rem; vertical-align: middle"><i class="fal fa-times fa-2x" style="color:red;"></i></td>
+                                            @endif
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>                     
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+@endsection
 
+@section('scripts')
+    <script src="{{ secure_asset('js/datagrid/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            
+            
+            var table = $('#dt_table').dataTable({
+                responsive: true,
+                select: { style: 'single' },
+                dom:                       
+                    "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'B>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                buttons: [                        
+                    {
+                        text: 'Borrar',
+                        titleAttr: 'Borrar',
+                        className: 'btn buttons-selected btn-danger',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Borrar.Click event');                            
+                                    var data = dt.row({selected: true}).data();   
+                                    if(data){
+                                        var id = data[0];
+                                        var url = "{{ secure_url('productos') }}";
+                                        bootbox.confirm({
+                                            title: "Eliminar",
+                                            message: "Esta seguro que desea eliminar?",
+                                            buttons:
+                                            {
+                                                cancel:
+                                                {
+                                                    label: '<i class="fa fa-times"></i> Cancelar'
+                                                },
+                                                confirm:
+                                                {
+                                                    label: '<i class="fa fa-check"></i> Confirmar'
+                                                }
+                                            },
+                                            callback: function(result)
+                                            {
+                                                if(result){             
+                                                    $.ajaxSetup({
+                                                        headers: {
+                                                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                                                        }
+                                                    });                    
+                                                    var type = "DELETE";                                                
+                                                    //var ajaxurl = "{{ secure_url('ajustes') }}";                     
+                                                    $.ajax({
+                                                        type: type,
+                                                        url: url+'/'+id , 
+                                                        dataType: 'json',
+                                                        contentType: "application/json",
+                                                        data: {
+                                                            _token: jQuery('meta[name="csrf-token"]').attr('content')
+                                                        },                           
+                                                        success: function (data) {               
+                                                            console.log("DELETE OK:" ,data);
+                                                            window.location.href = url; 
+                                                        },
+                                                        error: function (data) {
+                                                            console.log('DELETE Error:', data);
+                                                        }
+                                                    });
+
+                                                }
+
+                                            }
+                                        
+                                        });
+                                    }                                     
+                                }
+                    },
+                    {                           
+                        text: 'Editar',
+                        titleAttr: 'Editar',
+                        className: 'btn buttons-selected btn-primary',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Editar.Click event');
+                                    var data = dt.row({selected: true}).data();  
+                                    if(data){
+                                        var id = data[0];
+                                        var url = "{{ secure_url('productos') }}" + "/" + id + "/edit";
+                                        window.location.href = url;    
+                                    }
+                                                                    
+                                }
+                    },
+                    {
+                        text: 'Nuevo',
+                        titleAttr: 'Nuevo',
+                        className: 'new_custom btn buttons-selected btn-info',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Nuevo.Click event');
+                                    window.location.href = "{{ secure_url('productos/create') }}";                                    
+                                }
+                    },
+                    {
+                        text: 'Vender',
+                        titleAttr: 'Vender Producto',
+                        className: 'new_custom btn buttons-selected btn-info',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Nuevo.Click event');
+                                    window.location.href = "{{ secure_url('vender/create') }}";                                    
+                                }
+                    }
+
+                ],
+                language: {
+                    url: "{{ secure_asset('css/datagrid/datatables/spanish.json') }}"
+                },
+                columnDefs: [
+                    {
+                        "targets": [ 0 ], 
+                        "visible": false,
+                        "searchable": true
+                    }
+                ]
+                    
+            });               
+           
+            
+        });
+    </script>
 @endsection

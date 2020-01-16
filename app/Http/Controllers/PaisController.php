@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use App\Pais;
 use Illuminate\Http\Request;
+use Redirect,Response;
 
 class PaisController extends Controller {
 
@@ -15,9 +16,9 @@ class PaisController extends Controller {
 	 */
 	public function index()
 	{
-		$pais = Pais::orderBy('id', 'desc')->paginate(10);
+		$paises = Pais::orderBy('id', 'desc')->paginate(10);
 
-		return view('pais.index', compact('pais'));
+		return view('pais.index', compact('paises'));
 	}
 
 	/**
@@ -38,11 +39,11 @@ class PaisController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$pai = new Pais();
+		$pais = new Pais();
 
-		$pai->pais_nombre = $request->input("pais_nombre");
+		$pais->pais_nombre = $request->input("pais_nombre");
 
-		$pai->save();
+		$pais->save();
 
 		return redirect()->route('pais.index')->with('message', 'Item created successfully.');
 	}
@@ -55,9 +56,9 @@ class PaisController extends Controller {
 	 */
 	public function show($id)
 	{
-		$pai = Pais::findOrFail($id);
+		$pais = Pais::findOrFail($id);
 
-		return view('pais.show', compact('pai'));
+		return view('pais.show', compact('pais'));
 	}
 
 	/**
@@ -68,9 +69,9 @@ class PaisController extends Controller {
 	 */
 	public function edit($id)
 	{
-		$pai = Pais::findOrFail($id);
+		$pais = Pais::findOrFail($id);
 
-		return view('pais.edit', compact('pai'));
+		return view('pais.edit', compact('pais'));
 	}
 
 	/**
@@ -82,11 +83,11 @@ class PaisController extends Controller {
 	 */
 	public function update(Request $request, $id)
 	{
-		$pai = Pais::findOrFail($id);
+		$pais = Pais::findOrFail($id);
 
-		$pai->pais_nombre = $request->input("pais_nombre");
+		$pais->pais_nombre = $request->input("pais_nombre");
 
-		$pai->save();
+		$pais->save();
 
 		return redirect()->route('pais.index')->with('message', 'Item updated successfully.');
 	}
@@ -97,12 +98,17 @@ class PaisController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
-		$pai = Pais::findOrFail($id);
-		$pai->delete();
-
-		return redirect()->route('pais.index')->with('message', 'Item deleted successfully.');
+		$pais = Pais::findOrFail($id);
+		$pais->delete();
+        if($request->isJson()){
+			return response()->json([
+                'success' => 'Record has been deleted successfully!'
+        	]);
+		}else{
+			return redirect()->route('ajustes.index')->with('info', 'Eliminado exitosamente.');
+		}
 	}
 
 }

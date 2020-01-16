@@ -42,6 +42,14 @@
                 
             </li>
             <li>
+                <a href="/productos" title="Productos" data-filter-tags="productos">
+                    <i class="fal fa-info-circle"></i>
+                    <span class="nav-link-text" data-i18n="nav.productos">Productos</span>
+                </a>
+                
+            </li>
+            
+            <li>
                 <a href="#" title="Configuración" data-filter-tags="configuracion">
                     <i class="fal fa-cog"></i>
                     <span class="nav-link-text" data-i18n="nav.configuracion">Configuración</span>

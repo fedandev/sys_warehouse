@@ -12,7 +12,7 @@ class CreateLocalidadsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('localidades', function(Blueprint $table) {
+		Schema::create('localidads', function(Blueprint $table) {
             $table->increments('id');
             $table->string('localidad_nombre');
             $table->integer('fk_provincia_id')->unsigned()->index()->nullable();;
@@ -28,7 +28,7 @@ class CreateLocalidadsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('localidades');
+		Schema::drop('localidads');
 	}
 
 }

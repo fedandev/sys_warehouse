@@ -55,7 +55,7 @@ class AjusteController extends Controller {
         $ajuste = Ajuste::create($request->all());
         
         //return Response::json($ajuste);
-		return redirect()->route('ajustes.show', $ajuste->id)->with('info', 'Creado exitosamente.');		
+		return redirect()->secure(route('ajustes.show', $ajuste->id))->with('info', 'Creado exitosamente.');		
 	}
 
 	/**
@@ -121,8 +121,5 @@ class AjusteController extends Controller {
 		}else{
 			return redirect()->route('ajustes.index')->with('info', 'Eliminado exitosamente.');
 		}
-        
-		
 	}
-
 }

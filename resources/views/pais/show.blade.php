@@ -1,36 +1,41 @@
-@extends('layout')
-@section('header')
-<div class="page-header">
-        <h1>Pais / Show #{{$pai->id}}</h1>
-        <form action="{{ route('pais.destroy', $pai->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
-            <input type="hidden" name="_method" value="DELETE">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <div class="btn-group pull-right" role="group" aria-label="...">
-                <a class="btn btn-warning btn-group" role="group" href="{{ route('pais.edit', $pai->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-                <button type="submit" class="btn btn-danger">Delete <i class="glyphicon glyphicon-trash"></i></button>
-            </div>
-        </form>
-    </div>
-@endsection
+@extends('layouts.app')
 
 @section('content')
+    @include('error')
     <div class="row">
-        <div class="col-md-12">
-
-            <form action="#">
-                <div class="form-group">
-                    <label for="nome">ID</label>
-                    <p class="form-control-static"></p>
+        <div class="col-xl-6">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2>
+                         Pais / Ver #{{$pais->pais_nombre}}
+                    </h2>                   
                 </div>
-                <div class="form-group">
-                     <label for="pais_nombre">PAIS_NOMBRE</label>
-                     <p class="form-control-static">{{$pai->pais_nombre}}</p>
+                <div class="panel-container show">
+                    <div class="panel-content p-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <div class="panel-content">
+                            <div class="form-group">
+                                <label class="form-label" for="simpleinput">Nombre</label>
+                                <input type="text" id="pais_nombre-field" name="pais_nombre" class="form-control" value="{{$pais->pais_nombre}}" disabled/>                        
+                            </div>
+                        </div> 
+                        <div class="panel-content">
+                            <div class="well well-sm">
+                                <form action="{{ route('pais.destroy', $pais->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Esta seguro que desea eliminar?')) { return true } else {return false };">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <div class="btn-group pull-right" role="group" aria-label="...">
+                                        <a class="btn btn-warning btn-group" role="group" href="{{ route('pais.edit', $pais->id) }}">
+                                            <i class="glyphicon glyphicon-edit"></i> Editar</a>
+                                        <button type="submit" class="btn btn-danger">Eliminar <i class="glyphicon glyphicon-trash"></i></button>
+                                    </div>
+                                </form>
+                                <a class="btn btn-link pull-right" href="{{ route('pais.index') }}"> Volver</a>
+                            </div>
+                         </div> 
+                    </div>
                 </div>
-            </form>
-
-            <a class="btn btn-link" href="{{ route('pais.index') }}"><i class="glyphicon glyphicon-backward"></i>  Back</a>
-
+            </div>
         </div>
     </div>
-
 @endsection

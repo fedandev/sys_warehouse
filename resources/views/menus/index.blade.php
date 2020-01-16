@@ -1,64 +1,185 @@
-@extends('layout')
+@extends('layouts.app')
 
-@section('header')
-    <div class="page-header clearfix">
-        <h1>
-            <i class="glyphicon glyphicon-align-justify"></i> Menus
-            <a class="btn btn-success pull-right" href="{{ route('menus.create') }}"><i class="glyphicon glyphicon-plus"></i> Create</a>
-        </h1>
-
-    </div>
+@section('styles')
+    <link rel="stylesheet" media="screen, print" href="{{ secure_asset('css/datagrid/datatables/datatables.bundle.css') }}">
 @endsection
 
 @section('content')
     <div class="row">
-        <div class="col-md-12">
-            @if($menus->count())
-                <table class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>MENU_DESCRIPCION</th>
-                        <th>MENU_POSICION</th>
-                        <th>MENU_HABILITADO</th>
-                        <th>MENU_URL</th>
-                        <th>MENU_ICONO</th>
-                        <th>MENU_FORMULARIO</th>
-                        <th>MENU_PADRE_ID</th>
-                            <th class="text-right">OPTIONS</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach($menus as $menu)
-                            <tr>
-                                <td>{{$menu->id}}</td>
-                                <td>{{$menu->menu_descripcion}}</td>
-                    <td>{{$menu->menu_posicion}}</td>
-                    <td>{{$menu->menu_habilitado}}</td>
-                    <td>{{$menu->menu_url}}</td>
-                    <td>{{$menu->menu_icono}}</td>
-                    <td>{{$menu->menu_formulario}}</td>
-                    <td>{{$menu->menu_padre_id}}</td>
-                                <td class="text-right">
-                                    <a class="btn btn-xs btn-primary" href="{{ route('menus.show', $menu->id) }}"><i class="glyphicon glyphicon-eye-open"></i> View</a>
-                                    <a class="btn btn-xs btn-warning" href="{{ route('menus.edit', $menu->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-                                    <form action="{{ route('menus.destroy', $menu->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button type="submit" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                {!! $menus->render() !!}
-            @else
-                <h3 class="text-center alert alert-info">Empty!</h3>
-            @endif
-
+        <div class="col-xl-12">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2>Menus</h2>                     
+                </div>
+                <div class="panel-container show">
+                    <div class="panel-content">                          
+                        <div class="row">
+                            <div class="col-xl-12">                                
+                                <table id="dt_table" class="table table-bordered table-hover table-striped w-100 table-sm" >
+                                    <thead class="bg-primary-500">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Descripción</th>
+                                            <th>Posición</th>
+                                            <th>Habilitado</th>
+                                            <th>Url</th>
+                                            <th>Icono</th>
+                                            <th>Formulario</th>
+                                            <th>M.Padre</th>                                            
+                                        </tr>                                                   
+                                    </thead>
+                                    <tbody>
+                                        @foreach($menus as $menu)
+                                            @php 
+                                                if($menu->menu_padre_id >0){
+                                                    $menu_padre = $menu->padre();     
+                                                }else{
+                                                    $menu_padre = null;
+                                                }
+                                            @endphp
+                                        <tr>
+                                            <td>{{$menu->id}}</td>
+                                            <td>{{$menu->menu_descripcion}}</td>
+                                            <td>{{$menu->menu_posicion}}</td>
+                                            <td>{{$menu->menu_habilitado}}</td>
+                                            <td><a href="{{ $menu->menu_url }}" target="_blank">{{$menu->menu_url}}</a> </td>
+                                            <td><i class="fa {{$menu->menu_icono}}"></i> </td>
+                                            <td>{{$menu->menu_formulario}}</td>      
+                                            
+                                            @if ($menu_padre)
+                                                <td><a href="{{ route('menus.show', $menu_padre->id ) }}" target="_blank">{{ $menu_padre->menu_descripcion }} </a> </td>
+                                            @else
+                                                <td> </td>
+                                            @endif
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>                     
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+@endsection
+
+
+
+@section('scripts')
+    <script src="{{ secure_asset('js/datagrid/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
+    <script>
+        $(document).ready(function() {
+            
+            
+            var table = $('#dt_table').dataTable({
+                responsive: true,
+                select: { style: 'single' },
+                dom:                       
+                    "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'B>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                buttons: [                        
+                    {
+                        text: 'Borrar',
+                        titleAttr: 'Borrar',
+                        className: 'btn buttons-selected btn-danger',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Borrar.Click event');                            
+                                    var data = dt.row({selected: true}).data();   
+                                    if(data){
+                                        var id = data[0];
+                                        var url = "{{ secure_url('menus') }}";
+                                        bootbox.confirm({
+                                            title: "Eliminar",
+                                            message: "Esta seguro que desea eliminar?",
+                                            buttons:
+                                            {
+                                                cancel:
+                                                {
+                                                    label: '<i class="fa fa-times"></i> Cancelar'
+                                                },
+                                                confirm:
+                                                {
+                                                    label: '<i class="fa fa-check"></i> Confirmar'
+                                                }
+                                            },
+                                            callback: function(result)
+                                            {
+                                                if(result){             
+                                                    $.ajaxSetup({
+                                                        headers: {
+                                                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                                                        }
+                                                    });                    
+                                                    var type = "DELETE";                                                
+                                                    //var ajaxurl = "{{ secure_url('ajustes') }}";                     
+                                                    $.ajax({
+                                                        type: type,
+                                                        url: url+'/'+id , 
+                                                        dataType: 'json',
+                                                        contentType: "application/json",
+                                                        data: {
+                                                            _token: jQuery('meta[name="csrf-token"]').attr('content')
+                                                        },                           
+                                                        success: function (data) {               
+                                                            console.log("DELETE OK:" ,data);
+                                                            window.location.href = url; 
+                                                        },
+                                                        error: function (data) {
+                                                            console.log('DELETE Error:', data);
+                                                        }
+                                                    });
+
+                                                }
+
+                                            }
+                                        
+                                        });
+                                    }                                     
+                                }
+                    },
+                    {                           
+                        text: 'Editar',
+                        titleAttr: 'Editar',
+                        className: 'btn buttons-selected btn-primary',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Editar.Click event');
+                                    var data = dt.row({selected: true}).data();  
+                                    if(data){
+                                        var id = data[0];
+                                        var url = "{{ secure_url('menus') }}" + "/" + id + "/edit";
+                                        window.location.href = url;    
+                                    }
+                                                                    
+                                }
+                    },
+                    {
+                        text: 'Nuevo',
+                        titleAttr: 'Nuevo',
+                        className: 'new_custom btn buttons-selected btn-info',
+                        action: function ( e, dt, node, config ) {
+                                    console.log('Nuevo.Click event');
+                                    window.location.href = "{{ secure_url('menus/create') }}";                                    
+                                }
+                    }
+
+                ],
+                language: {
+                    url: "{{ secure_asset('css/datagrid/datatables/spanish.json') }}"
+                },
+                columnDefs: [
+                    {
+                        "targets": [ 0 ], 
+                        "visible": false,
+                        "searchable": true
+                    }
+                ]
+                    
+            });               
+           
+            
+        });
+    </script>
 @endsection

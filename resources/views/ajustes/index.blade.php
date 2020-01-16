@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('styles')
-
     <link rel="stylesheet" media="screen, print" href="{{ secure_asset('css/datagrid/datatables/datatables.bundle.css') }}">
-
 @endsection
 
 @section('content')
@@ -43,17 +41,11 @@
                 </div>
             </div>
         </div>
-    </div>    
-
+    </div>
 @endsection
-
-
 
 @section('scripts')
     <script src="{{ secure_asset('js/datagrid/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
-   
-
-
     <script>
         $(document).ready(function() {
             
@@ -167,6 +159,4 @@
             
         });
     </script>
-    
-
 @endsection

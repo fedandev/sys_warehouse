@@ -1,49 +1,42 @@
-@extends('layout')
-@section('css')
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css" rel="stylesheet">
-@endsection
-@section('header')
-    <div class="page-header">
-        <h1><i class="glyphicon glyphicon-plus"></i> Provincias / Create </h1>
-    </div>
-@endsection
+@extends('layouts.app')
 
 @section('content')
     @include('error')
-
     <div class="row">
-        <div class="col-md-12">
-
-            <form action="{{ route('provincias.store') }}" method="POST">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-                <div class="form-group @if($errors->has('provincia_nombre')) has-error @endif">
-                       <label for="provincia_nombre-field">Provincia_nombre</label>
-                    <input type="text" id="provincia_nombre-field" name="provincia_nombre" class="form-control" value="{{ old("provincia_nombre") }}"/>
-                       @if($errors->has("provincia_nombre"))
-                        <span class="help-block">{{ $errors->first("provincia_nombre") }}</span>
-                       @endif
-                    </div>
-                    <div class="form-group @if($errors->has('fk_pais_id')) has-error @endif">
-                       <label for="fk_pais_id-field">Fk_pais_id</label>
-                    <input type="text" id="fk_pais_id-field" name="fk_pais_id" class="form-control" value="{{ old("fk_pais_id") }}"/>
-                       @if($errors->has("fk_pais_id"))
-                        <span class="help-block">{{ $errors->first("fk_pais_id") }}</span>
-                       @endif
-                    </div>
-                <div class="well well-sm">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <a class="btn btn-link pull-right" href="{{ route('provincias.index') }}"><i class="glyphicon glyphicon-backward"></i> Back</a>
+        <div class="col-xl-6">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2>
+                        Nueva Provincia
+                    </h2>                   
                 </div>
-            </form>
-
+                <div class="panel-container show">
+                    <div class="panel-content p-0">
+                        <form action="{{ route('provincias.store') }}" method="POST">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <div class="panel-content">
+                                <div class="form-group">
+                                    <label class="form-label" for="simpleinput">Nombre</label>
+                                     <input type="text" id="provincia_nombre-field" name="provincia_nombre" class="form-control" value="{{ old('provincia_nombre') }}"/>                        
+                                </div>    
+                                <div class="form-group">
+                                    <label class="form-label" for="simpleinput">País</label>
+                                    <select class="select2_demo_2 form-control" name="fk_pais_id" id="fk_pais_id-field" value="{{ old('fk_pais_id') }}">
+                                      <option value="">Seleccione un país...</option>  
+                                      @include('layouts.paises')
+                                    </select>
+                                </div> 
+                            </div> 
+                            <div class="panel-content">
+                                <div class="well well-sm">
+                                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                                    <a class="btn btn-link pull-right" href="{{ route('provincias.index') }}"> Volver</a>
+                                </div>
+                             </div> 
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-@endsection
-@section('scripts')
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-  <script>
-    $('.date-picker').datepicker({
-    });
-  </script>
+    </div> 
 @endsection

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use App\Marca;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MarcaController extends Controller {
 
@@ -105,4 +106,8 @@ class MarcaController extends Controller {
 		return redirect()->route('marcas.index')->with('message', 'Item deleted successfully.');
 	}
 
+    public function getMarcas(){
+        $cat = DB::table('marcas')->select('id', 'marca_nombre')->get();
+        return response()->json($cat);
+    }
 }

@@ -1,4 +1,3 @@
-
  <!-- DOC: script to save and load page settings -->
 <script>
     /**
@@ -62,3 +61,4 @@
 
 <script src="{{ secure_asset('js/vendors.bundle.js') }}" type="text/javascript"></script>
 <script src="{{ secure_asset('js/app.bundle.js') }}" type="text/javascript"></script>
+<script src="{{ secure_asset('js/h_treeview.js') }}" type="text/javascript"></script>

@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-
 @section('content')
     @include('error')
     <div class="row">
@@ -13,7 +12,7 @@
                 </div>
                 <div class="panel-container show">
                     <div class="panel-content p-0">
-                        <form action="{{ route('ajustes.store') }}" method="POST">
+                        <form action="{{ secure_url('ajustes') }}" method="POST">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <div class="panel-content">
                                 <div class="form-group">
@@ -42,7 +41,5 @@
                 </div>
             </div>
         </div>
-    </div>    
-
+    </div> 
 @endsection
-

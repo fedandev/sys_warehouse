@@ -109,12 +109,18 @@ class MenuController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy(Request $request,$id)
 	{
 		$menu = Menu::findOrFail($id);
 		$menu->delete();
-
-		return redirect()->route('menus.index')->with('message', 'Item deleted successfully.');
+		if($request->isJson()){
+			return response()->json([
+            'success' => 'Registro eliminado correctamente.'
+        	]);
+		}else{
+			return redirect()->route('menus.index')->with('message', 'Item deleted successfully.');
+		}
+		
 	}
 
 }

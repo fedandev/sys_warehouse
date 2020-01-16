@@ -9,5 +9,16 @@ return [
     'ModuloController' => 'Modulos',    
     'PerfilController' => 'Perfiles',
     'PermisoController' => 'Permisos',    
-    'UserController' => 'Usuarios'    
+    'UserController' => 'Usuarios',
+    'PaisController' => 'Países',
+    'ClienteController' => 'Clientes',
+    'ColorController' => 'Colores',
+    'LocalidadController' => 'Localidades',
+    'MarcaController' => 'Marcas',
+    'ProductoController' => 'Productos',
+    'ProvinciasController' => 'Provincias',
+    'RubroController' => 'Rubros',
+    'StockController' => 'Stock',
+    'SucursalController' => 'Sucursales',
+    'TallaController' => 'Talles'
 ];

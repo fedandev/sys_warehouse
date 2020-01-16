@@ -15,9 +15,9 @@ class LocalidadController extends Controller {
 	 */
 	public function index()
 	{
-		$localidads = Localidad::orderBy('id', 'desc')->paginate(10);
+		$localidades = Localidad::orderBy('id', 'desc')->paginate(10);
 
-		return view('localidads.index', compact('localidads'));
+		return view('localidads.index', compact('localidades'));
 	}
 
 	/**
@@ -39,13 +39,18 @@ class LocalidadController extends Controller {
 	public function store(Request $request)
 	{
 		$localidad = new Localidad();
-
+    
+    $this->validate($request, [
+        'localidad_nombre' => 'required|string|max:191',
+        'fk_provincia_id' => 'required|integer|max:60',
+    ]);
+    
 		$localidad->localidad_nombre = $request->input("localidad_nombre");
-        $localidad->fk_provincia_id = $request->input("fk_provincia_id");
+    $localidad->fk_provincia_id = $request->input("fk_provincia_id");
 
 		$localidad->save();
 
-		return redirect()->route('localidads.index')->with('message', 'Item created successfully.');
+		return redirect()->route('localidades.index')->with('message', 'Item created successfully.');
 	}
 
 	/**
@@ -86,11 +91,11 @@ class LocalidadController extends Controller {
 		$localidad = Localidad::findOrFail($id);
 
 		$localidad->localidad_nombre = $request->input("localidad_nombre");
-        $localidad->fk_provincia_id = $request->input("fk_provincia_id");
+    //$localidad->fk_provincia_id = $request->input("fk_provincia_id");
 
 		$localidad->save();
 
-		return redirect()->route('localidads.index')->with('message', 'Item updated successfully.');
+		return redirect()->route('localidades.index')->with('message', 'Item updated successfully.');
 	}
 
 	/**

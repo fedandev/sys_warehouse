@@ -1,49 +1,68 @@
-@extends('layout')
-@section('css')
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.css" rel="stylesheet">
-@endsection
-@section('header')
-    <div class="page-header">
-        <h1><i class="glyphicon glyphicon-plus"></i> Localidads / Create </h1>
-    </div>
-@endsection
+@extends('layouts.app')
 
 @section('content')
     @include('error')
-
     <div class="row">
-        <div class="col-md-12">
-
-            <form action="{{ route('localidads.store') }}" method="POST">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-                <div class="form-group @if($errors->has('localidad_nombre')) has-error @endif">
-                       <label for="localidad_nombre-field">Localidad_nombre</label>
-                    <input type="text" id="localidad_nombre-field" name="localidad_nombre" class="form-control" value="{{ old("localidad_nombre") }}"/>
-                       @if($errors->has("localidad_nombre"))
-                        <span class="help-block">{{ $errors->first("localidad_nombre") }}</span>
-                       @endif
-                    </div>
-                    <div class="form-group @if($errors->has('fk_provincia_id')) has-error @endif">
-                       <label for="fk_provincia_id-field">Fk_provincia_id</label>
-                    <input type="text" id="fk_provincia_id-field" name="fk_provincia_id" class="form-control" value="{{ old("fk_provincia_id") }}"/>
-                       @if($errors->has("fk_provincia_id"))
-                        <span class="help-block">{{ $errors->first("fk_provincia_id") }}</span>
-                       @endif
-                    </div>
-                <div class="well well-sm">
-                    <button type="submit" class="btn btn-primary">Create</button>
-                    <a class="btn btn-link pull-right" href="{{ route('localidads.index') }}"><i class="glyphicon glyphicon-backward"></i> Back</a>
+        <div class="col-xl-6">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2>
+                        Nueva Localidad
+                    </h2>                   
                 </div>
-            </form>
+                <div class="panel-container show">
+                    <div class="panel-content p-0">
+                        <form action="{{ route('localidades.store') }}" method="POST">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <div class="panel-content">
+                                <div class="form-group">
+                                    <label class="form-label" for="simpleinput">Nombre</label>
+                                     <input type="text" id="localidad_nombre-field" name="localidad_nombre" class="form-control" value="{{ old('localidad_nombre') }}"/>                        
+                                </div>    
 
+                                <div class="form-group">
+                                    <label class="form-label" for="simpleinput">País</label>
+                                    <select class="select2_demo_2 form-control" name="pais_nombre" id="pais_nombre-field" value="{{ old('pais_id') }}">
+                                        <option value=''> Seleccione un país </option>
+                                        @include('layouts.paises')
+                                    </select>
+                                </div> 
+
+                                <div class="form-group">
+                                    <label class="form-label" for="simpleinput">Provincia</label>
+                                    <select class="select2_demo_2 form-control" name="fk_provincia_id" id="fk_provincia_id-field" value="{{ old('fk_provincia_id') }}">
+                                        
+                                    </select>
+                                </div> 
+                            </div> 
+                            <div class="panel-content">
+                                <div class="well well-sm">
+                                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                                    <a class="btn btn-link pull-right" href="{{ route('localidades.index') }}"> Volver</a>
+                                </div>
+                             </div> 
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </div> 
 @endsection
+
 @section('scripts')
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
-  <script>
-    $('.date-picker').datepicker({
-    });
-  </script>
+    <script>
+        $(document).ready(function(){
+            $("#pais_nombre-field").change(function(event){
+                $.get(`../../provincias/${event.target.value}`, function(res, sta){
+                    $('#fk_provincia_id-field').empty();
+                    if(res.length>=0){
+                      $("#fk_provincia_id-field").append('<option> Seleccione una provincia.</option>');
+                          res.forEach(element => {
+                              $('#fk_provincia_id-field').append(`<option value=${element.id}> ${element.provincia_nombre} </option>`);
+                          });
+		                }
+                });
+            });
+        });
+    </script>
 @endsection

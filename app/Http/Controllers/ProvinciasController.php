@@ -2,7 +2,7 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\DB;
 use App\Provincias;
 use Illuminate\Http\Request;
 
@@ -69,9 +69,9 @@ class ProvinciasController extends Controller {
 	 */
 	public function edit($id)
 	{
-		$provincium = Provincias::findOrFail($id);
+		$provincia = Provincias::findOrFail($id);
 
-		return view('provincias.edit', compact('provincium'));
+		return view('provincias.edit', compact('provincia'));
 	}
 
 	/**
@@ -107,4 +107,14 @@ class ProvinciasController extends Controller {
 		return redirect()->route('provincias.index')->with('message', 'Item deleted successfully.');
 	}
 
+  public function getProvincias(Request $request, $id){
+		if($request->ajax()){
+			$provincias = DB::table('provincias')
+					->join('pais', 'pais.id', '=', 'provincias.fk_pais_id')
+					->where('pais.id', '=', $id)
+					->select('provincias.*')
+					->get();
+			return response()->json($provincias);
+		}
+	}
 }
