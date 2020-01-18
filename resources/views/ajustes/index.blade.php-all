@@ -1,0 +1,186 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="row">
+        <div class="col-xl-12">
+            <div id="panel-1" class="panel">
+                <div class="panel-hdr">
+                    <h2>
+                        Ajustes
+                    </h2>
+                    <div class="panel-toolbar">
+                        <button class="btn btn-panel" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></button>
+                        <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></button>
+                        <button class="btn btn-panel" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"></button>
+                    </div>
+                </div>
+                <div class="panel-container show">
+                    <div class="panel-content">                        
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <!-- datatable start -->
+                                <table id="dt-basic-example" class="table table-bordered table-hover table-striped w-100">
+                                                                   
+                                </table>
+                                <!-- datatable end -->
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+@endsection
+
+
+
+@section('scripts')
+    <script src="{{ secure_asset('js/datagrid/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
+    <script> 
+        $(document).ready(function() {                       
+                var columnDefs = [{
+                    title: "Id",
+                    id: "id",
+                    data: "id",
+                    placeholderMsg: "Server Generated ID",
+                    "visible": false,
+                    "searchable": false,
+                    type: "readonly"
+                },{
+                    title: 'Nombre', id: 'ajuste_nombre', data: "ajuste_nombre"
+                }, {
+                    title: 'Valor', id: 'ajuste_valor', data: "ajuste_valor"
+                }, {
+                    title: 'Descripción', id: 'ajuste_descripcion', data: "ajuste_descripcion"
+                }
+                ];  
+           
+                /* start data table */
+                var myTable = $('#dt-basic-example').dataTable(
+                {
+                    /* check datatable buttons page for more info on how this DOM structure works */
+                    dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'B>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    /* selecting multiple rows will not work */
+                    select: 'single',
+                    /* altEditor at work */
+                    altEditor: true,
+                    responsive: true,
+                    ajax: '{{ secure_url("ajustes/get")}}',
+                    columns: columnDefs,
+                    /* buttons uses classes from bootstrap, see buttons page for more details */
+                    buttons: [
+                    {
+                        extend: 'selected',
+                        text: '<i class="fal fa-times mr-1"></i> Eliminar',
+                        name: 'delete',
+                        className: 'btn-primary btn-sm mr-1'
+                    },
+                    {
+                        extend: 'selected',
+                        text: '<i class="fal fa-edit mr-1"></i> Editar',
+                        name: 'edit',
+                        className: 'btn-primary btn-sm mr-1'
+                    },
+                    {
+                        text: '<i class="fal fa-plus mr-1"></i> Agregar',
+                        name: 'add',
+                        className: 'btn-success btn-sm mr-1'
+                    },
+                    {
+                        text: '<i class="fal fa-sync mr-1"></i> Sincronizar',
+                        name: 'refresh',
+                        className: 'btn-primary btn-sm'
+                    }],
+                   
+
+                    /* default callback for insertion: mock webservice, always success */
+                    onAddRow: function(dt, rowdata, success, error)
+                    {              
+                        success(rowdata);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                            }
+                        });                    
+                        var type = "POST";                        
+                        var ajaxurl = 'ajustes';                        
+                        $.ajax({
+                            type: type,
+                            url: ajaxurl,
+                            data: JSON.stringify(rowdata),
+                            dataType: 'json',
+                            contentType: "application/json",
+                            success: function (data) {               
+                                console.log("INSERT OK:" ,data);
+                            },
+                            error: function (data) {
+                                console.log('INSERT Error:', data);
+                            }
+                        });
+                        
+                    },
+                    onEditRow: function(dt, rowdata, success, error)
+                    {
+                        
+                        success(rowdata);                  
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                            }
+                        });                    
+                        var type = "PUT";
+                        var id = rowdata['id'];             
+                        var ajaxurl = "{{ secure_url('ajustes') }}"; 
+                        
+                        $.ajax({
+                            type: type,
+                            url: ajaxurl+'/'+id ,
+                            data: JSON.stringify(rowdata),
+                            dataType: 'json',
+                            contentType: "application/json",
+                            success: function (data) {               
+                                console.log("UPDATE OK:" ,data);
+                            },
+                            error: function (data) {
+                                console.log('UPDATE Error:', data);
+                            }
+                        });
+                    },
+                    onDeleteRow: function(dt, rowdata, success, error)
+                    {
+                        success(rowdata);                  
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                            }
+                        });                    
+                        var type = "DELETE";
+                        var id = rowdata['id'];             
+                        var ajaxurl = "{{ secure_url('ajustes') }}";                     
+                        $.ajax({
+                            type: type,
+                            url: ajaxurl+'/'+id ,
+                            data: {
+                                _token: jQuery('meta[name="csrf-token"]').attr('content')
+                            },                           
+                            success: function (data) {               
+                                console.log("DELETE OK:" ,data);
+                            },
+                            error: function (data) {
+                                console.log('DELETE Error:', data);
+                            }
+                        });
+                    },
+                });
+
+            });
+
+    
+    </script>
+
+
+@endsection
